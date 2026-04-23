@@ -8,6 +8,8 @@ import { Button } from '../ui/button';
 import { Input } from '../ui/input';
 import { Label } from '../ui/label';
 import * as actions from '@/actions'
+import { useActionState } from 'react';
+
 interface MovieProps {
   id: string;
   title: string;
@@ -18,6 +20,28 @@ interface MovieProps {
 const ShowMovie = ({ data }: { data: MovieProps }) => {
   const [openDialog, setOpenDialog] = useState(false);
   const [updatedMovie, setUpdatedMovie] = useState({ ...data });
+
+  const deleteAction = async (prevState: { error?: string } | null, formData: FormData) => {
+    try {
+      await actions.deleteMovie(formData);
+      return null;
+    } catch (e: any) {
+      return { error: e.message };
+    }
+  };
+
+  const editAction = async (prevState: { error?: string } | null, formData: FormData) => {
+    try {
+      await actions.editMovie(formData);
+      setOpenDialog(false);
+      return null;
+    } catch (e: any) {
+      return { error: e.message };
+    }
+  };
+
+  const [deleteState, deleteDispatch] = useActionState(deleteAction, null);
+  const [editState, editDispatch] = useActionState(editAction, null);
 
   const handleUpdateMovie = (
     e: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>,
@@ -41,9 +65,10 @@ const ShowMovie = ({ data }: { data: MovieProps }) => {
         <p className="mt-2">{data.description}</p>
 
         {/* Delete Button */}
-        <form action={actions.deleteMovie} className="mt-4">
+        <form action={deleteDispatch} className="mt-4">
           <Input type="hidden" name="movieID" value={data.id} />
           <Button className="bg-red-500 px-4 py-2 text-white">Delete</Button>
+          {deleteState?.error && <p className="text-red-500">{deleteState.error}</p>}
         </form>
 
         {/* Edit Dialog */}
@@ -61,7 +86,7 @@ const ShowMovie = ({ data }: { data: MovieProps }) => {
             <DialogHeader>
               <DialogTitle>Edit Movie</DialogTitle>
 
-              <form className="space-y-4" action={actions.editMovie}>
+              <form className="space-y-4" action={editDispatch}>
                 <div>
                   <Label>Title</Label>
                   <Input
@@ -93,9 +118,10 @@ const ShowMovie = ({ data }: { data: MovieProps }) => {
                 </div>
 
                 <Input type="hidden" name="movieID" value={data.id} />
-                <Button type="submit" onClick={() => setOpenDialog(false)}>
+                <Button type="submit">
                   Save
                 </Button>
+                {editState?.error && <p className="text-red-500">{editState.error}</p>}
               </form>
             </DialogHeader>
           </DialogContent>
@@ -105,4 +131,4 @@ const ShowMovie = ({ data }: { data: MovieProps }) => {
   );
 };
 
-export default ShowMovie;
+export default ShowMovie
