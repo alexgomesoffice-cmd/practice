@@ -1,0 +1,73 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Get a free hosted Postgres database in seconds: `npx create-db`
+
+generator client {
+  provider = "prisma-client"
+  output   = "../generated/prisma"
+}
+
+datasource db {
+  provider = "mysql"
+}
+
+model User {
+  id              Int        @id @default(autoincrement())
+  fullname        String
+  email           String     @unique
+  password        String
+  profileImage    String?
+  posts           Post[]
+  likes           Like[]
+  comments        Comment[]
+}
+
+
+model Post {
+  id              Int        @id @default(autoincrement())
+  title           String
+  article         String
+  userId          Int
+  user            User       @relation(fields: [userId], references: [id])
+  images          ImagePost[]
+  likes           Like[]
+  comments        Comment[]
+  categories      Category[]
+  createdAt       DateTime   @default(now())
+  updatedAt       DateTime   @updatedAt
+}
+
+
+model ImagePost {
+  id              Int        @id @default(autoincrement())
+  imageUrl        String
+  postId          Int
+  post            Post       @relation(fields: [postId], references: [id])
+}
+
+
+model Like {
+  id              Int        @id @default(autoincrement())
+  userId          Int
+  user            User       @relation(fields: [userId], references: [id])
+  postId          Int
+  post            Post       @relation(fields: [postId], references: [id])
+  @@unique([userId, postId])
+}
+
+model Comment {
+  id              Int        @id @default(autoincrement())
+  body            String
+  userId          Int
+  user            User       @relation(fields: [userId], references: [id])
+  postId          Int
+  post            Post       @relation(fields: [postId], references: [id])
+  createdAt       DateTime   @default(now())
+}
+
+model Category {
+  id              Int        @id @default(autoincrement())
+  name            String     @unique
+  posts           Post[]
+}
