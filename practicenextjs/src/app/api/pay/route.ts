@@ -52,13 +52,15 @@ data.append("ship_country", "Bangladesh");
     return NextResponse.json({
       url: result?.GatewayPageURL,
     });
-  } catch (error: any) {
+  } catch (error: unknown) {
     console.error("PAYMENT ERROR:", error);
+
+    const message = error instanceof Error ? error.message : String(error);
 
     return NextResponse.json(
       {
         success: false,
-        message: error.message,
+        message,
       },
       { status: 500 }
     );

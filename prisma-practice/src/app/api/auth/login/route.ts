@@ -1,7 +1,7 @@
 import {z} from "zod"
 import { prisma } from "@/lib/prisma"
 import { signToken } from "@/lib/jwt"
-
+import { NextResponse } from "next/server"
 
 export const loginSchema = z.object({
     email: z.email("Invalid email address"),
@@ -38,9 +38,16 @@ export async function POST (req: Request) {
         email: user.email,
     })
 
-    return Response.json({
+    const response = NextResponse.json({
         success: true,
         message: "Login successful",
-        token: token,
+    })
+
+
+    response.cookies.set("token", token, {
+        httpOnly: true,
+        secure: process.env.NODE_ENV === "production",
+        sameSite: "strict",
+        maxAge: 60 * 60 * 24 * 7,
     })
 }
