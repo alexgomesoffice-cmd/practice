@@ -2,7 +2,6 @@
 
 import { useState } from "react";
 import { useRouter } from "next/navigation";
-
 export default function LoginPage() {
   const [message, setMessage] = useState("");
 

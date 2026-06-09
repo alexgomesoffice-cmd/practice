@@ -1,6 +1,6 @@
 import { users } from "@/data/users"
 import { NextResponse } from "next/server";
-export async function POST(req:request) {
+export async function POST(req:Request) {
     const body = await req.json();
 
     const existingUser = users.find(
@@ -8,8 +8,9 @@ export async function POST(req:request) {
     );
 
     if (existingUser){
-        return NextResponse({
-            message:"User already exist"
+        return NextResponse.json({
+            success: false,
+            message: "User already exists"
         });
     }
 

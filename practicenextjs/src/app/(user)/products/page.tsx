@@ -1,9 +1,26 @@
 "use client";
 
 import { products } from "@/data/products";
+import { useRouter } from "next/navigation";
+
+type Product = {
+  id: number;
+  name: string;
+  price: number;
+  image?: string;
+};
+
+type User = {
+  id: number;
+  name: string;
+  email: string;
+  password?: string;
+};
 
 export default function ProductsPage() {
-  async function handleBuy(product: any) {
+  const router = useRouter();
+
+  async function handleBuy(product: Product) {
   const user = localStorage.getItem("user");
 
   if (!user) {
@@ -11,7 +28,7 @@ export default function ProductsPage() {
     return;
   }
 
-  const parsedUser = JSON.parse(user);
+  const parsedUser = JSON.parse(user) as User;
 
   const res = await fetch("/api/pay", {
     method: "POST",
@@ -28,13 +45,14 @@ export default function ProductsPage() {
   const data = await res.json();
 
   if (data.url) {
-    window.location.href = data.url;
+    router.push(data.url);
   } else {
     alert("Payment failed to initialize");
   }
 }
 
   return (
+    
     <div style={{ padding: 20 }}>
       <h1>Products</h1>
 
