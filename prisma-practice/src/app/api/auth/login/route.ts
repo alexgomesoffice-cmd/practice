@@ -50,4 +50,6 @@ export async function POST (req: Request) {
         sameSite: "strict",
         maxAge: 60 * 60 * 24 * 7,
     })
+
+    return response
 }

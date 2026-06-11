@@ -33,9 +33,12 @@ model Post {
   images          ImagePost[]
   likes           Like[]
   comments        Comment[]
-  categories      Category[]
+  categoryId      Int
+  category        Category   @relation(fields: [categoryId], references: [id])
   createdAt       DateTime   @default(now())
   updatedAt       DateTime   @updatedAt
+  @@index([userId])
+  @@index([categoryId])
 }
 
 
@@ -54,6 +57,8 @@ model Like {
   postId          Int
   post            Post       @relation(fields: [postId], references: [id])
   @@unique([userId, postId])
+  @@index([postId])
+  @@index([userId])
 }
 
 model Comment {
@@ -64,6 +69,7 @@ model Comment {
   postId          Int
   post            Post       @relation(fields: [postId], references: [id])
   createdAt       DateTime   @default(now())
+  @@index([postId])
 }
 
 model Category {

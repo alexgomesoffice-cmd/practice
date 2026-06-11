@@ -1,7 +1,7 @@
 import {cookies} from "next/headers"
 import { verifyToken } from "@/lib/jwt"
 import { prisma } from "@/lib/prisma"
-import { NextResponse } from "next/server"
+
 
 
 export async function GET() {
@@ -23,6 +23,7 @@ export async function GET() {
             select: {
                 id: true,
                 email: true,
+                fullname: true,
             }
             })
             return Response.json({

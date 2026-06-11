@@ -26,14 +26,9 @@ export default function HomeLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html
-      lang="en"
-      className={cn("h-full", "antialiased", geistSans.variable, geistMono.variable, "font-sans", inter.variable)}
-    >
-      <body className="min-h-full flex flex-col">
-        <Navbar />
-          <main className="min-h-screen pt-20">{children}</main>
-        </body>
-    </html>
+    <>
+      <Navbar />
+      <main className="min-h-screen pt-20">{children}</main>
+    </>
   );
 }
